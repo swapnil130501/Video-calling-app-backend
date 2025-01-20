@@ -20,10 +20,10 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
     console.log("New user connected");
 
-    socket.on('disconnect', (socket) => {
-        console.log('User disconnected')
-    })
-})
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
 
 server.listen(serverConfig.PORT, () => {
     console.log(`server started at ${serverConfig.PORT}`);

@@ -19,7 +19,7 @@ const io = new socket_io_1.Server(server, {
 });
 io.on('connection', (socket) => {
     console.log("New user connected");
-    socket.on('disconnect', (socket) => {
+    socket.on('disconnect', () => {
         console.log('User disconnected');
     });
 });
