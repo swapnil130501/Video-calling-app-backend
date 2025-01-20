@@ -10,12 +10,12 @@ const roomHandler = (socket: Socket) => {
         console.log("Room created with id:", roomId);
     };
 
-    const joinRoom = () => {
-        console.log("New room joined");
+    const joinedRoom = ({ roomId }: { roomId: string}) => {
+        console.log("New user has joined the room", roomId);
     };
 
     socket.on('create-room', createRoom);
-    socket.on('join-room', joinRoom);
+    socket.on('joined-room', joinedRoom);
 };
 
 export default roomHandler;

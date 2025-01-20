@@ -20,7 +20,7 @@ const io = new socket_io_1.Server(server, {
 });
 io.on('connection', (socket) => {
     console.log("New user connected");
-    (0, roomHandler_1.default)(socket); // pass the socket connection to the roomHandler for room creation and joining
+    (0, roomHandler_1.default)(socket);
     socket.on('disconnect', () => {
         console.log('User disconnected');
     });
