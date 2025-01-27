@@ -31,6 +31,14 @@ const roomHandler = (socket) => {
         // Emit the participants list to the joining user
         socket.emit("get-users", { roomId, participants: rooms[roomId] });
     };
+    const sendMessage = ({ roomId, peerId, message }) => {
+        if (!roomId || !peerId || !message) {
+            socket.emit("error", { message: "Invalid room, peer ID or message." });
+            return;
+        }
+        console.log("Message recieved from peer:", peerId, message);
+        socket.to(roomId).emit("new-message", { peerId, message });
+    };
     socket.on("disconnect", () => {
         for (const [roomId, participants] of Object.entries(rooms)) {
             const index = participants.indexOf(socket.id);
@@ -49,5 +57,6 @@ const roomHandler = (socket) => {
     });
     socket.on("create-room", createRoom);
     socket.on("joined-room", joinedRoom);
+    socket.on("send-message", sendMessage);
 };
 exports.default = roomHandler;

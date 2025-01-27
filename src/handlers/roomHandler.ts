@@ -18,28 +18,37 @@ const roomHandler = (socket: Socket) => {
             socket.emit("error", { message: "Invalid room or peer ID." });
             return;
         }
-    
+
         if (!rooms[roomId]) {
             socket.emit("error", { message: "Room does not exist." });
             return;
         }
-    
+
         if (rooms[roomId].includes(peerId)) {
             socket.emit("error", { message: "You are already in the room." });
             return;
         }
-    
+
         console.log("New user joining room:", roomId, "with peer ID:", peerId);
         rooms[roomId].push(peerId);
         socket.join(roomId);
-    
+
         // Immediately emit the user-joined event to others in the room
         socket.to(roomId).emit("user-joined", { peerId });
-    
+
         // Emit the participants list to the joining user
         socket.emit("get-users", { roomId, participants: rooms[roomId] });
     };
-    
+
+    const sendMessage = ({ roomId, peerId, message}: IRoomParams) => {
+        if(!roomId || !peerId || !message) {
+            socket.emit("error", { message: "Invalid room, peer ID or message." });
+            return;
+        }
+
+        console.log("Message recieved from peer:", peerId, message)
+        socket.to(roomId).emit("new-message", { peerId, message });
+    }
 
     socket.on("disconnect", () => {
         for (const [roomId, participants] of Object.entries(rooms)) {
@@ -59,6 +68,7 @@ const roomHandler = (socket: Socket) => {
 
     socket.on("create-room", createRoom);
     socket.on("joined-room", joinedRoom);
+    socket.on("send-message", sendMessage);
 };
 
 export default roomHandler;
